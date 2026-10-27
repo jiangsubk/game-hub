@@ -6,11 +6,18 @@
 
 ## 三个游戏
 
-| 游戏 | 类型 | 运行方式 | 来源 |
+| 游戏 | 类型 | 运行方式 | 原仓库 |
 |---|---|---|---|
-| **雷霆战机** | 竖屏射击 | 浏览器 | `jiangsubk/thunder-fighter` |
-| **俄罗斯方块** | 益智 | 浏览器 | `jiangsubk/tetris-html` |
-| **俄罗斯方块 · 桌面版** | 益智 | 本地 Python | `jiangsubk/tetris` |
+| **雷霆战机** | 竖屏射击 | 浏览器 | `thunder-fighter`（已并入） |
+| **俄罗斯方块** | 益智 | 浏览器 | `tetris-html`（已并入） |
+| **俄罗斯方块 · 桌面版** | 益智 | 本地 Python | `tetris`（已并入） |
+
+原三个独立仓库已删除，代码、提交与说明全部收进本仓库。在线地址统一为：
+
+- 大厅：https://jiangsubk.github.io/game-hub/
+- 雷霆战机：https://jiangsubk.github.io/game-hub/games/thunder-fighter/
+- 俄罗斯方块：https://jiangsubk.github.io/game-hub/games/tetris/
+- 桌面版说明：https://jiangsubk.github.io/game-hub/games/tetris-pygame/
 
 前两个点开就玩。第三个是 Pygame 原生实现，浏览器跑不了，游戏厅里保留了一个说明页，讲清楚怎么在本地运行、以及它和网页版的差异。
 
