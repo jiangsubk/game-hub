@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>俄罗斯方块 · 桌面版 | 游戏厅</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #07070d;
+    --line: rgba(255, 255, 255, 0.07);
+    --line-strong: rgba(255, 255, 255, 0.13);
+    --text: #f2f2f7;
+    --muted: #8b8b9e;
+    --dim: #5d5d70;
+    --acc: #34d399;
+    --acc-soft: rgba(52, 211, 153, 0.14);
+  }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  .glow {
+    position: fixed;
+    width: 640px; height: 640px;
+    top: -300px; left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(52, 211, 153, 0.18), transparent 68%);
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .grid-lines {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 10%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 10%, transparent 75%);
+  }
+
+  .back {
+    position: fixed;
+    left: 16px; top: 16px;
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 32px;
+    padding: 0 13px 0 11px;
+    border-radius: 16px;
+    font: 600 12px/1 inherit;
+    color: rgba(255,255,255,0.7);
+    background: rgba(8,8,14,0.6);
+    border: 1px solid var(--line-strong);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    text-decoration: none;
+    transition: background .2s, color .2s, border-color .2s;
+  }
+  .back:hover { color: #fff; background: rgba(20,20,32,0.9); border-color: rgba(255,255,255,0.28); }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 84px 28px 64px;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--acc);
+    margin-bottom: 16px;
+  }
+  .eyebrow .bar {
+    width: 22px; height: 2px;
+    background: var(--acc);
+    border-radius: 1px;
+  }
+
+  h1 {
+    font-size: clamp(30px, 4.4vw, 44px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 14px;
+  }
+  h1 .sub {
+    display: block;
+    font-size: 0.42em;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+
+  .lede {
+    color: var(--muted);
+    max-width: 60ch;
+    margin-bottom: 36px;
+  }
+
+  .notice {
+    display: flex;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(251, 191, 36, 0.09), rgba(251, 191, 36, 0.03));
+    border: 1px solid rgba(251, 191, 36, 0.22);
+    margin-bottom: 40px;
+  }
+  .notice .ico { font-size: 18px; line-height: 1.4; flex-shrink: 0; }
+  .notice strong { color: #fcd34d; font-weight: 650; }
+  .notice p { font-size: 13.5px; color: #c9c2a8; margin-top: 3px; }
+  .notice code {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 12px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: rgba(251, 191, 36, 0.12);
+    color: #fcd34d;
+  }
+
+  h2 {
+    font-size: 13px;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin: 40px 0 16px;
+  }
+
+  /* 命令行 */
+  .terminal {
+    border-radius: 12px;
+    border: 1px solid var(--line-strong);
+    background: #0b0f0d;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.025);
+    border-bottom: 1px solid var(--line);
+  }
+  .terminal-bar i {
+    width: 9px; height: 9px; border-radius: 50%;
+    display: block;
+  }
+  .terminal-bar i:nth-child(1) { background: #f87171; }
+  .terminal-bar i:nth-child(2) { background: #fbbf24; }
+  .terminal-bar i:nth-child(3) { background: #34d399; }
+  .terminal-bar span {
+    margin-left: 6px;
+    font-size: 11px;
+    color: var(--dim);
+    font-family: ui-monospace, Consolas, monospace;
+  }
+  .terminal pre {
+    padding: 16px 18px;
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.85;
+    color: #d1fae5;
+    overflow-x: auto;
+  }
+  .terminal .prompt { color: var(--acc); user-select: none; }
+  .terminal .cmt { color: #4b6b5b; }
+
+  /* 两栏 */
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+
+  .panel {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.008));
+    padding: 18px 20px;
+  }
+  .panel h3 {
+    font-size: 13px;
+    font-weight: 650;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    text-align: left;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--dim);
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  td {
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--muted);
+  }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--text); font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+  td code {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 11.5px;
+    padding: 1.5px 5px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.06);
+    color: #cbd5e1;
+  }
+
+  .feat { list-style: none; font-size: 13px; }
+  .feat li {
+    display: flex;
+    gap: 9px;
+    padding: 6px 0;
+    color: var(--muted);
+  }
+  .feat li::before {
+    content: "";
+    flex-shrink: 0;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--acc);
+    margin-top: 8px;
+    opacity: 0.8;
+  }
+
+  .diff { font-size: 13px; }
+  .diff .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .diff .row:last-child { border-bottom: none; }
+  .diff .k { color: var(--muted); }
+  .diff .v { font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: var(--text); }
+  .diff .v.hi { color: var(--acc); }
+
+  /* 源码 */
+  .code {
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: #0b0f0d;
+    overflow: hidden;
+  }
+  .code pre {
+    padding: 16px 0;
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.75;
+    overflow-x: auto;
+    color: #cbd5e1;
+  }
+  .code .ln {
+    display: inline-block;
+    width: 46px;
+    padding-right: 14px;
+    text-align: right;
+    color: #2f4a3c;
+    user-select: none;
+  }
+  .code .kw { color: #7dd3fc; }
+  .code .num { color: #fbbf24; }
+  .code .str { color: #86efac; }
+  .code .cm { color: #4b6b5b; font-style: italic; }
+
+  .foot {
+    margin-top: 48px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--dim);
+  }
+
+  @media (max-width: 760px) {
+    .cols { grid-template-columns: 1fr; }
+    .wrap { padding: 76px 18px 48px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="glow"></div>
+<div class="grid-lines"></div>
+
+<a class="back" href="../../index.html">&larr; 大厅</a>
+
+<div class="wrap">
+
+  <div class="eyebrow"><span class="bar"></span>Desktop Build</div>
+
+  <h1>
+    俄罗斯方块 · 桌面版
+    <span class="sub">Python 3 + Pygame 原生实现 · 原 jiangsubk/tetris 仓库</span>
+  </h1>
+
+  <p class="lede">
+    这是三个仓库合并时的第三个 —— 一个跑在本地的 Pygame 版本。
+    它和网页版玩法同源，但运行在 Python 进程里，有自己的窗口和帧循环。
+  </p>
+
+  <div class="notice">
+    <div class="ico">⚠️</div>
+    <div>
+      <strong>这个版本不能在浏览器里直接玩。</strong>
+      <p>
+        它依赖 Pygame（底层是 SDL）来创建原生窗口和接管输入，浏览器跑不了 Python。
+        要么装 Python 在本地运行，要么玩 <a href="../tetris/index.html" style="color:#34d399">网页版</a>。
+        源码已完整保留在项目 <code>legacy/tetris.py</code>。
+      </p>
+    </div>
+  </div>
+
+  <h2>运行方式</h2>
+  <div class="terminal">
+    <div class="terminal-bar"><i></i><i></i><i></i><span>powershell</span></div>
+<pre><span class="cmt"># 安装依赖（只有 pygame 一个）</span>
+<span class="prompt">PS&gt;</span> pip install -r requirements.txt
+
+<span class="cmt"># 启动</span>
+<span class="prompt">PS&gt;</span> python tetris.py
+
+<span class="cmt"># 或者一步到位</span>
+<span class="prompt">PS&gt;</span> pip install pygame &amp;&amp; python tetris.py</pre>
+  </div>
+
+  <div class="cols">
+
+    <div class="panel">
+      <h3>操作</h3>
+      <table>
+        <tr><th>按键</th><th>功能</th></tr>
+        <tr><td>&larr; &rarr;</td><td>左右移动</td></tr>
+        <tr><td>&uarr;</td><td>旋转</td></tr>
+        <tr><td>&darr;</td><td>加速下落</td></tr>
+        <tr><td>空格</td><td>直接落底</td></tr>
+        <tr><td>C</td><td>暂存 Hold</td></tr>
+        <tr><td>P</td><td>暂停</td></tr>
+        <tr><td>R</td><td>重新开始</td></tr>
+        <tr><td>ESC</td><td>退出（Web 版没有）</td></tr>
+      </table>
+    </div>
+
+    <div class="panel">
+      <h3>特性</h3>
+      <ul class="feat">
+        <li>7-bag 随机生成，保证出块公平</li>
+        <li>影子方块（Ghost Piece）预测落点</li>
+        <li>Hold 暂存，每轮限用一次</li>
+        <li>墙踢（Wall Kick）旋转不卡死</li>
+        <li>NES 风格计分：100 / 300 / 500 / 800 &times; 等级</li>
+        <li>每消 10 行升一级，下落间隔递减</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <h2>与网页版的差异</h2>
+  <div class="panel diff">
+    <div class="row"><span class="k">运行环境</span><span class="v">Python 3 + Pygame / 浏览器</span></div>
+    <div class="row"><span class="k">渲染方式</span><span class="v">SDL 原生窗口 / Canvas 2D</span></div>
+    <div class="row"><span class="k">计分规则</span><span class="v">NES 风格（两版一致）</span></div>
+    <div class="row"><span class="k">下落间隔下限</span><span class="v hi">100 ms / 80 ms</span></div>
+    <div class="row"><span class="k">触屏支持</span><span class="v">无 / 有</span></div>
+    <div class="row"><span class="k">最高分存档</span><span class="v">无 / localStorage</span></div>
+  </div>
+
+  <h2>源码片段 · legacy/tetris.py</h2>
+  <div class="code">
+<pre><span class="ln">146</span>    <span class="kw">def</span> _clear_lines(self):
+<span class="ln">147</span>        lines = []
+<span class="ln">148</span>        <span class="kw">for</span> row_idx <span class="kw">in</span> <span class="kw">range</span>(ROWS):
+<span class="ln">149</span>            <span class="kw">if</span> <span class="kw">all</span>(self.board[row_idx]):
+<span class="ln">150</span>                lines.append(row_idx)
+<span class="ln">151</span>
+<span class="ln">152</span>        <span class="kw">if</span> lines:
+<span class="ln">153</span>            <span class="kw">for</span> row_idx <span class="kw">in</span> <span class="kw">reversed</span>(lines):
+<span class="ln">154</span>                <span class="kw">del</span> self.board[row_idx]
+<span class="ln">155</span>                self.board.insert(<span class="num">0</span>, [<span class="num">0</span>] * COLS)
+<span class="ln">156</span>
+<span class="ln">157</span>            cleared = <span class="kw">len</span>(lines)
+<span class="ln">158</span>            self.lines_cleared += cleared
+<span class="ln">159</span>            <span class="cm"># 计分规则（NES 风格）</span>
+<span class="ln">160</span>            points = {<span class="num">1</span>: <span class="num">100</span>, <span class="num">2</span>: <span class="num">300</span>, <span class="num">3</span>: <span class="num">500</span>, <span class="num">4</span>: <span class="num">800</span>}
+<span class="ln">161</span>            self.score += points.get(cleared, <span class="num">0</span>) * self.level
+<span class="ln">162</span>            self.level = self.lines_cleared // <span class="num">10</span> + <span class="num">1</span>
+<span class="ln">163</span>            self.drop_interval = <span class="kw">max</span>(<span class="num">100</span>, <span class="num">500</span> - (self.level - <span class="num">1</span>) * <span class="num">30</span>)</pre>
+  </div>
+
+  <div class="foot">
+    <span>源码：legacy/tetris.py（466 行）</span>
+    <span>·</span>
+    <span>许可：MIT</span>
+    <span>·</span>
+    <a href="https://github.com/jiangsubk/tetris" style="color:#34d399;text-decoration:none">原始仓库 ↗</a>
+  </div>
+
+</div>
+
+</body>
+</html>

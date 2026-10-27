@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>游戏厅 · Arcade</title>
+<meta name="description" content="三个小游戏，一个入口：雷霆战机、俄罗斯方块、俄罗斯方块桌面版">
+<link rel="stylesheet" href="assets/hub.css">
+</head>
+<body>
+
+<div class="glow glow-a"></div>
+<div class="glow glow-b"></div>
+<div class="grid-lines"></div>
+
+<main class="shell">
+
+  <header class="masthead">
+    <div class="eyebrow">
+      <span class="dot"></span>
+      PERSONAL ARCADE
+    </div>
+    <h1>游戏<span class="accent">厅</span></h1>
+    <p class="tagline">三个游戏，一个入口。全部离线可玩，进度存在本地。</p>
+  </header>
+
+  <section class="cards" id="cards">
+
+    <!-- 雷霆战机 -->
+    <a class="card card-thunder" href="games/thunder-fighter/index.html">
+      <div class="cover">
+        <svg viewBox="0 0 400 170" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="skyThunder" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0b1230"/>
+              <stop offset="100%" stop-color="#05060f"/>
+            </linearGradient>
+            <linearGradient id="shipBody" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#7dd3fc"/>
+              <stop offset="100%" stop-color="#0ea5e9"/>
+            </linearGradient>
+            <filter id="glowThunder">
+              <feGaussianBlur stdDeviation="3" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <rect width="400" height="170" fill="url(#skyThunder)"/>
+          <g fill="#93c5fd" opacity="0.55">
+            <circle cx="38" cy="26" r="1.4"/><circle cx="92" cy="62" r="1"/><circle cx="150" cy="20" r="1.6"/>
+            <circle cx="212" cy="52" r="1.1"/><circle cx="268" cy="24" r="1.3"/><circle cx="322" cy="70" r="1"/>
+            <circle cx="356" cy="32" r="1.5"/><circle cx="70" cy="110" r="1"/><circle cx="300" cy="118" r="1.2"/>
+            <circle cx="24" cy="78" r="1"/><circle cx="180" cy="128" r="1.3"/><circle cx="250" cy="96" r="1"/>
+          </g>
+          <g filter="url(#glowThunder)">
+            <g transform="translate(200 96)">
+              <path d="M0 -26 L11 -2 L28 12 L10 8 L0 20 L-10 8 L-28 12 L-11 -2 Z" fill="url(#shipBody)"/>
+              <path d="M0 -14 L4 6 L0 12 L-4 6 Z" fill="#e0f2fe" opacity="0.9"/>
+              <rect x="-1.6" y="20" width="3.2" height="16" rx="1.6" fill="#38bdf8" opacity="0.85"/>
+              <rect x="-1.2" y="20" width="2.4" height="8" rx="1.2" fill="#f0f9ff"/>
+            </g>
+            <g fill="#f87171" opacity="0.9">
+              <path d="M96 46 l7 12 -7 12 -7 -12 z"/>
+              <path d="M300 38 l6 10 -6 10 -6 -10 z"/>
+            </g>
+          </g>
+          <g stroke="#38bdf8" stroke-width="2" stroke-linecap="round" opacity="0.5">
+            <line x1="286" y1="150" x2="286" y2="120"/>
+            <line x1="112" y1="152" x2="112" y2="136"/>
+          </g>
+        </svg>
+        <span class="badge badge-web">WEB</span>
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <h2>雷霆战机</h2>
+          <span class="arrow">→</span>
+        </div>
+        <p class="desc">竖屏射击。拖动即操控，自动开火，一波接一波的敌机和 BOSS。</p>
+        <div class="card-foot">
+          <span class="chip">弹幕射击</span>
+          <span class="chip">移动优先</span>
+          <span class="best" data-best="thunder">最佳 —</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 俄罗斯方块 Web -->
+    <a class="card card-tetris" href="games/tetris/index.html">
+      <div class="cover">
+        <svg viewBox="0 0 400 170" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="skyTetris" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#14102a"/>
+              <stop offset="100%" stop-color="#08060f"/>
+            </linearGradient>
+            <filter id="glowTetris">
+              <feGaussianBlur stdDeviation="4" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <rect width="400" height="170" fill="url(#skyTetris)"/>
+          <g opacity="0.13" stroke="#a78bfa" stroke-width="1">
+            <line x1="0" y1="43" x2="400" y2="43"/><line x1="0" y1="86" x2="400" y2="86"/>
+            <line x1="0" y1="129" x2="400" y2="129"/>
+          </g>
+          <g filter="url(#glowTetris)" transform="translate(112 6)">
+            <g transform="translate(0 0)">
+              <rect x="0" y="0" width="26" height="26" rx="3" fill="#a78bfa"/>
+              <rect x="0" y="28" width="26" height="26" rx="3" fill="#a78bfa"/>
+              <rect x="26" y="28" width="26" height="26" rx="3" fill="#c4b5fd"/>
+              <rect x="52" y="28" width="26" height="26" rx="3" fill="#a78bfa"/>
+            </g>
+            <g transform="translate(0 60)">
+              <rect x="0" y="0" width="26" height="26" rx="3" fill="#38bdf8"/>
+              <rect x="26" y="0" width="26" height="26" rx="3" fill="#7dd3fc"/>
+              <rect x="26" y="28" width="26" height="26" rx="3" fill="#38bdf8"/>
+              <rect x="26" y="56" width="26" height="26" rx="3" fill="#38bdf8"/>
+            </g>
+            <g transform="translate(70 56)">
+              <rect x="0" y="0" width="26" height="26" rx="3" fill="#fbbf24"/>
+              <rect x="0" y="28" width="26" height="26" rx="3" fill="#fcd34d"/>
+              <rect x="26" y="28" width="26" height="26" rx="3" fill="#fbbf24"/>
+              <rect x="0" y="56" width="26" height="26" rx="3" fill="#fbbf24"/>
+            </g>
+            <g transform="translate(126 84)">
+              <rect x="0" y="0" width="26" height="26" rx="3" fill="#f472b6" opacity="0.45"/>
+              <rect x="26" y="0" width="26" height="26" rx="3" fill="#f472b6" opacity="0.45"/>
+            </g>
+          </g>
+        </svg>
+        <span class="badge badge-web">WEB</span>
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <h2>俄罗斯方块</h2>
+          <span class="arrow">→</span>
+        </div>
+        <p class="desc">7-bag 公平随机、影子方块、Hold 暂存、墙踢。键盘和触屏都能玩。</p>
+        <div class="card-foot">
+          <span class="chip">益智</span>
+          <span class="chip">键盘 + 触屏</span>
+          <span class="best" data-best="tetris">最佳 —</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Python 桌面版 -->
+    <a class="card card-pygame" href="games/tetris-pygame/index.html">
+      <div class="cover">
+        <svg viewBox="0 0 400 170" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="skyPy" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#0a1a14"/>
+              <stop offset="100%" stop-color="#060a08"/>
+            </linearGradient>
+          </defs>
+          <rect width="400" height="170" fill="url(#skyPy)"/>
+          <g opacity="0.2" stroke="#34d399" stroke-width="1">
+            <line x1="0" y1="34" x2="400" y2="34"/><line x1="0" y1="68" x2="400" y2="68"/>
+            <line x1="0" y1="102" x2="400" y2="102"/><line x1="0" y1="136" x2="400" y2="136"/>
+          </g>
+          <g transform="translate(74 34)">
+            <rect x="0" y="0" width="252" height="102" rx="8" fill="#0d1117" stroke="#1f3b2f" stroke-width="1.5"/>
+            <rect x="0" y="0" width="252" height="20" rx="8" fill="#132019"/>
+            <circle cx="14" cy="10" r="3" fill="#f87171"/>
+            <circle cx="26" cy="10" r="3" fill="#fbbf24"/>
+            <circle cx="38" cy="10" r="3" fill="#34d399"/>
+            <text x="16" y="46" font-family="ui-monospace, Consolas, monospace" font-size="13" fill="#34d399">$ python tetris.py</text>
+            <text x="16" y="70" font-family="ui-monospace, Consolas, monospace" font-size="11" fill="#6b8f7c">pygame 2.x · 480x640 · NES scoring</text>
+            <text x="16" y="90" font-family="ui-monospace, Consolas, monospace" font-size="11" fill="#4b6b5b">ready. press any key_</text>
+            <rect x="176" y="52" width="26" height="26" rx="3" fill="#34d399" opacity="0.85"/>
+            <rect x="202" y="52" width="26" height="26" rx="3" fill="#22d3ee" opacity="0.7"/>
+            <rect x="202" y="78" width="26" height="26" rx="3" fill="#34d399" opacity="0.5"/>
+          </g>
+        </svg>
+        <span class="badge badge-desktop">DESKTOP</span>
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <h2>俄罗斯方块 <span class="sup">桌面版</span></h2>
+          <span class="arrow">→</span>
+        </div>
+        <p class="desc">Python + Pygame 原生实现，NES 计分规则。需要在本地跑 Python。</p>
+        <div class="card-foot">
+          <span class="chip">Pygame</span>
+          <span class="chip">需 Python</span>
+          <span class="best muted">源码保留</span>
+        </div>
+      </div>
+    </a>
+
+  </section>
+
+  <footer class="foot">
+    <span>Arcade · 合并自 3 个独立仓库</span>
+    <span class="sep">·</span>
+    <span>本地存档，无需登录</span>
+    <span class="sep">·</span>
+    <span class="hint">按 <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> 快速进入</span>
+  </footer>
+
+</main>
+
+<script src="assets/hub.js"></script>
+</body>
+</html>
